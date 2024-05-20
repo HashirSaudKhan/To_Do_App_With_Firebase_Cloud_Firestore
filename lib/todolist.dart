@@ -23,11 +23,16 @@ class _MyToDoListState extends State<MyToDoList> {
     final id = DateTime.now().microsecondsSinceEpoch.toString();
     final title = addcontroller.text.trim();
 
-    try {
-      await databaseRef.child(id).set({'id': id, 'title': title});
-      addcontroller.clear();
-    } catch (error) {
-      debugPrint('Error adding item to list: $error');
+    if (addcontroller.text.isEmpty) {
+      //Alert box error
+      return req_type_text_func();
+    } else {
+      try {
+        await databaseRef.child(id).set({'id': id, 'title': title});
+        addcontroller.clear();
+      } catch (error) {
+        debugPrint('Error adding item to list: $error');
+      }
     }
   }
 
