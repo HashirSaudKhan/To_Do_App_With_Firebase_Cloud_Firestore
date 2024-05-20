@@ -46,6 +46,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '305142923822',
     projectId: 'to-do-list-167aa',
     authDomain: 'to-do-list-167aa.firebaseapp.com',
+    databaseURL: 'https://to-do-list-167aa-default-rtdb.firebaseio.com',
     storageBucket: 'to-do-list-167aa.appspot.com',
     measurementId: 'G-JZNZ39VQ37',
   );
@@ -55,6 +56,7 @@ class DefaultFirebaseOptions {
     appId: '1:305142923822:android:6f14f6883b029256da15bf',
     messagingSenderId: '305142923822',
     projectId: 'to-do-list-167aa',
+    databaseURL: 'https://to-do-list-167aa-default-rtdb.firebaseio.com',
     storageBucket: 'to-do-list-167aa.appspot.com',
   );
 
@@ -63,6 +65,7 @@ class DefaultFirebaseOptions {
     appId: '1:305142923822:ios:4986eedb91d79659da15bf',
     messagingSenderId: '305142923822',
     projectId: 'to-do-list-167aa',
+    databaseURL: 'https://to-do-list-167aa-default-rtdb.firebaseio.com',
     storageBucket: 'to-do-list-167aa.appspot.com',
     iosBundleId: 'com.example.toDoAppFirebaseRealtimeDb',
   );
@@ -72,6 +75,7 @@ class DefaultFirebaseOptions {
     appId: '1:305142923822:ios:4986eedb91d79659da15bf',
     messagingSenderId: '305142923822',
     projectId: 'to-do-list-167aa',
+    databaseURL: 'https://to-do-list-167aa-default-rtdb.firebaseio.com',
     storageBucket: 'to-do-list-167aa.appspot.com',
     iosBundleId: 'com.example.toDoAppFirebaseRealtimeDb',
   );
@@ -82,7 +86,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '305142923822',
     projectId: 'to-do-list-167aa',
     authDomain: 'to-do-list-167aa.firebaseapp.com',
+    databaseURL: 'https://to-do-list-167aa-default-rtdb.firebaseio.com',
     storageBucket: 'to-do-list-167aa.appspot.com',
     measurementId: 'G-0LE8XX76T8',
   );
+
 }

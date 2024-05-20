@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
 class MyToDoList extends StatefulWidget {
@@ -12,17 +14,21 @@ class MyToDoList extends StatefulWidget {
 class _MyToDoListState extends State<MyToDoList> {
   List to_do_list = ["Eating", "Smiling", "Sleeping"];
 
+  final databaseRef = FirebaseDatabase.instance.ref('ToDoList');
+
   TextEditingController addcontroller = TextEditingController();
   TextEditingController editcontroller = TextEditingController();
-  add_in_list() {
-    setState(() {
-      if (addcontroller.text.isNotEmpty) {
-        to_do_list.add(addcontroller.text);
-        addcontroller.clear();
-      } else {
-        req_type_text_func();
-      }
-    });
+
+  add_in_list() async {
+    final id = DateTime.now().microsecondsSinceEpoch.toString();
+    final title = addcontroller.text.trim();
+
+    try {
+      await databaseRef.child(id).set({'id': id, 'title': title});
+      addcontroller.clear();
+    } catch (error) {
+      debugPrint('Error adding item to list: $error');
+    }
   }
 
   delete_in_list({selected_index}) {
@@ -123,45 +129,45 @@ class _MyToDoListState extends State<MyToDoList> {
           )
         ],
       ),
-      body: ListView.builder(
-          itemCount: to_do_list.length,
-          itemBuilder: (context, index) {
-            return Container(
-              margin:
-                  const EdgeInsets.only(left: 18, right: 18, top: 5, bottom: 5),
-              decoration: BoxDecoration(
-                  color: const Color(0xfffce543),
-                  border: Border.all(color: Colors.black),
-                  borderRadius: BorderRadius.circular(10)),
-              child: ListTile(
-                textColor: Colors.black,
-                title: Text(to_do_list[index]),
-                trailing: Wrap(
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          delete_in_list(selected_index: index);
-                        },
-                        icon: const Icon(Icons.delete_outline_sharp)),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    IconButton(
-                        //Edit icon biutton
-                        onPressed: () {
-                          edit_in_list(index);
-                        },
-                        icon: const Icon(
-                          Icons.edit_outlined,
-                          shadows: [
-                            Shadow(offset: Offset(1, 1), blurRadius: 1)
-                          ],
-                        )),
-                  ],
-                ),
+      body: FirebaseAnimatedList(
+        defaultChild: const Text('Loading'),
+        query: databaseRef,
+        itemBuilder: (context, snapshot, animantion, index) {
+          return Container(
+            margin:
+                const EdgeInsets.only(left: 18, right: 18, top: 5, bottom: 5),
+            decoration: BoxDecoration(
+                color: const Color(0xfffce543),
+                border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(10)),
+            child: ListTile(
+              textColor: Colors.black,
+              title: Text(snapshot.child('title').value.toString()),
+              trailing: Wrap(
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        delete_in_list(selected_index: index);
+                      },
+                      icon: const Icon(Icons.delete_outline_sharp)),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  IconButton(
+                      //Edit icon biutton
+                      onPressed: () {
+                        edit_in_list(index);
+                      },
+                      icon: const Icon(
+                        Icons.edit_outlined,
+                        shadows: [Shadow(offset: Offset(1, 1), blurRadius: 1)],
+                      )),
+                ],
               ),
-            );
-          }),
+            ),
+          );
+        },
+      ),
     );
   }
 }
