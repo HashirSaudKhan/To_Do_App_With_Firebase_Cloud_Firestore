@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "305142923822",
+    "project_id": "to-do-list-167aa",
+    "storage_bucket": "to-do-list-167aa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:305142923822:android:6f14f6883b029256da15bf",
+        "android_client_info": {
+          "package_name": "com.example.to_do_app_firebase_realtime_db"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnMzOGZswt5Qv1WMHagjfZ-Yvf1KIISNI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
