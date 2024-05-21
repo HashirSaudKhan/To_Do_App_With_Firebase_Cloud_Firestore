@@ -36,10 +36,8 @@ class _MyToDoListState extends State<MyToDoList> {
     }
   }
 
-  delete_in_list({selected_index}) {
-    setState(() {
-      to_do_list.removeAt(selected_index);
-    });
+  delete_in_list(String id) async {
+    databaseRef.child(id).remove();
   }
 
   edit_in_Alertbox({Save_in_selected_list_index}) {
@@ -133,6 +131,8 @@ class _MyToDoListState extends State<MyToDoList> {
         defaultChild: const Text('Loading'),
         query: databaseRef,
         itemBuilder: (context, snapshot, animantion, index) {
+          final title = snapshot.child('title').value.toString();
+          final id = snapshot.child('id').value.toString();
           return Container(
             margin:
                 const EdgeInsets.only(left: 18, right: 18, top: 5, bottom: 5),
@@ -147,7 +147,7 @@ class _MyToDoListState extends State<MyToDoList> {
                 children: [
                   IconButton(
                       onPressed: () {
-                        delete_in_list(selected_index: index);
+                        delete_in_list(id);
                       },
                       icon: const Icon(Icons.delete_outline_sharp)),
                   const SizedBox(
@@ -156,8 +156,6 @@ class _MyToDoListState extends State<MyToDoList> {
                   IconButton(
                       //Edit icon biutton
                       onPressed: () {
-                        final title = snapshot.child('title').value.toString();
-                        final id = snapshot.child('id').value.toString();
                         edit_in_list(title, id);
                       },
                       icon: const Icon(
