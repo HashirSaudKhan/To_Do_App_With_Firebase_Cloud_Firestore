@@ -49,30 +49,25 @@ class _MyToDoListState extends State<MyToDoList> {
     });
   }
 
-  edit_in_selected_list(index) {
-    setState(() {
-      to_do_list[index] = editcontroller.text;
-      editcontroller.clear();
-    });
-  }
-
-  edit_in_list(index) {
+  edit_in_list(String title, String id) async {
+    editcontroller.text = title;
     return showDialog(
         barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(
             backgroundColor: Colors.amberAccent,
-            title: const Text("hashir"),
+            title: const Text("Update"),
             content: TextField(
               controller: editcontroller,
-              decoration: InputDecoration(
-                  hintText: editcontroller.text = to_do_list[index]),
+              decoration: InputDecoration(hintText: editcontroller.text),
             ),
             actions: [
               ElevatedButton(
                   onPressed: () {
-                    edit_in_selected_list(index);
+                    databaseRef.child(id).update({
+                      'title': editcontroller.text.toLowerCase(),
+                    });
                     Navigator.pop(context);
                   },
                   child: const Text("Save")),
@@ -161,7 +156,9 @@ class _MyToDoListState extends State<MyToDoList> {
                   IconButton(
                       //Edit icon biutton
                       onPressed: () {
-                        edit_in_list(index);
+                        final title = snapshot.child('title').value.toString();
+                        final id = snapshot.child('id').value.toString();
+                        edit_in_list(title, id);
                       },
                       icon: const Icon(
                         Icons.edit_outlined,
