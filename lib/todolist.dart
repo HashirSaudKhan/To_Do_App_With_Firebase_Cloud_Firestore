@@ -40,13 +40,6 @@ class _MyToDoListState extends State<MyToDoList> {
     databaseRef.child(id).remove();
   }
 
-  edit_in_Alertbox({Save_in_selected_list_index}) {
-    setState(() {
-      to_do_list[Save_in_selected_list_index] = editcontroller.text;
-      editcontroller.clear();
-    });
-  }
-
   edit_in_list(String title, String id) async {
     editcontroller.text = title;
     return showDialog(
