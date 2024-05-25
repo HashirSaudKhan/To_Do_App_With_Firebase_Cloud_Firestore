@@ -1,7 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class MyToDoList extends StatefulWidget {
@@ -12,9 +11,7 @@ class MyToDoList extends StatefulWidget {
 }
 
 class _MyToDoListState extends State<MyToDoList> {
-  List to_do_list = ["Eating", "Smiling", "Sleeping"];
-
-  final databaseRef = FirebaseDatabase.instance.ref('ToDoList');
+  final fireStore = FirebaseFirestore.instance.collection('users');
 
   TextEditingController addcontroller = TextEditingController();
   TextEditingController editcontroller = TextEditingController();
@@ -28,7 +25,8 @@ class _MyToDoListState extends State<MyToDoList> {
       return req_type_text_func();
     } else {
       try {
-        await databaseRef.child(id).set({'id': id, 'title': title});
+        // await databaseRef.child(id).set({'id': id, 'title': title});
+        await fireStore.doc(id).set({'id': id, 'title': title});
         addcontroller.clear();
       } catch (error) {
         debugPrint('Error adding item to list: $error');
@@ -37,7 +35,7 @@ class _MyToDoListState extends State<MyToDoList> {
   }
 
   delete_in_list(String id) async {
-    databaseRef.child(id).remove();
+    //databaseRef.child(id).remove();
   }
 
   edit_in_list(String title, String id) async {
@@ -56,9 +54,9 @@ class _MyToDoListState extends State<MyToDoList> {
             actions: [
               ElevatedButton(
                   onPressed: () {
-                    databaseRef.child(id).update({
-                      'title': editcontroller.text.toLowerCase(),
-                    });
+                    // databaseRef.child(id).update({
+                    //   'title': editcontroller.text.toLowerCase(),
+                    // });
                     Navigator.pop(context);
                   },
                   child: const Text("Save")),
@@ -120,47 +118,55 @@ class _MyToDoListState extends State<MyToDoList> {
           )
         ],
       ),
-      body: FirebaseAnimatedList(
-        defaultChild: const Text('Loading'),
-        query: databaseRef,
-        itemBuilder: (context, snapshot, animantion, index) {
-          final title = snapshot.child('title').value.toString();
-          final id = snapshot.child('id').value.toString();
-          return Container(
-            margin:
-                const EdgeInsets.only(left: 18, right: 18, top: 5, bottom: 5),
-            decoration: BoxDecoration(
-                color: const Color(0xfffce543),
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.circular(10)),
-            child: ListTile(
-              textColor: Colors.black,
-              title: Text(snapshot.child('title').value.toString()),
-              trailing: Wrap(
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        delete_in_list(id);
-                      },
-                      icon: const Icon(Icons.delete_outline_sharp)),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  IconButton(
-                      //Edit icon biutton
-                      onPressed: () {
-                        edit_in_list(title, id);
-                      },
-                      icon: const Icon(
-                        Icons.edit_outlined,
-                        shadows: [Shadow(offset: Offset(1, 1), blurRadius: 1)],
-                      )),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+
+      body: ListView.builder(
+          itemCount: 10,
+          itemBuilder: (context, index) {
+            return const ListTile(
+              title: Text("hash"),
+            );
+          }),
+      // body: FirebaseAnimatedList(
+      //   defaultChild: const Text('Loading'),
+      //   //query: databaseRef,
+      //   itemBuilder: (context, snapshot, animantion, index) {
+      //     //final title = snapshot.child('title').value.toString();
+      //     //final id = snapshot.child('id').value.toString();
+      //     return Container(
+      //       margin:
+      //           const EdgeInsets.only(left: 18, right: 18, top: 5, bottom: 5),
+      //       decoration: BoxDecoration(
+      //           color: const Color(0xfffce543),
+      //           border: Border.all(color: Colors.black),
+      //           borderRadius: BorderRadius.circular(10)),
+      //       child: ListTile(
+      //         textColor: Colors.black,
+      //         title: Text(snapshot.child('title').value.toString()),
+      //         trailing: Wrap(
+      //           children: [
+      //             IconButton(
+      //                 onPressed: () {
+      //                  // delete_in_list(id);
+      //                 },
+      //                 icon: const Icon(Icons.delete_outline_sharp)),
+      //             const SizedBox(
+      //               width: 10,
+      //             ),
+      //             IconButton(
+      //                 //Edit icon biutton
+      //                 onPressed: () {
+      //                  // edit_in_list(title, id);
+      //                 },
+      //                 icon: const Icon(
+      //                   Icons.edit_outlined,
+      //                   shadows: [Shadow(offset: Offset(1, 1), blurRadius: 1)],
+      //                 )),
+      //           ],
+      //         ),
+      //       ),
+      //     );
+      //   },
+      // ),
     );
   }
 }
