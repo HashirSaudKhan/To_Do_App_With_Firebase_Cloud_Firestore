@@ -58,6 +58,9 @@ class _MyToDoListState extends State<MyToDoList> {
             actions: [
               ElevatedButton(
                   onPressed: () {
+                    fireStoreref.doc(id).update({
+                      'title': editcontroller.text.toLowerCase(),
+                    });
                     // databaseRef.child(id).update({
                     //   'title': editcontroller.text.toLowerCase(),
                     // });
@@ -134,6 +137,8 @@ class _MyToDoListState extends State<MyToDoList> {
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (BuildContextcontext, index) {
+                final id = snapshot.data!.docs[index]['id'].toString();
+                final title = snapshot.data!.docs[index]['title'].toString();
                 return Container(
                   margin: const EdgeInsets.only(
                       left: 18, right: 18, top: 5, bottom: 5),
@@ -158,7 +163,7 @@ class _MyToDoListState extends State<MyToDoList> {
                         IconButton(
                             //Edit icon biutton
                             onPressed: () {
-                              // edit_in_list(title, id);
+                              edit_in_list(title, id);
                             },
                             icon: const Icon(
                               Icons.edit_outlined,
