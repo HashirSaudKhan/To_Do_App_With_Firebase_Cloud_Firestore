@@ -11,7 +11,11 @@ class MyToDoList extends StatefulWidget {
 }
 
 class _MyToDoListState extends State<MyToDoList> {
-  final fireStore = FirebaseFirestore.instance.collection('users');
+  CollectionReference fireStoreref =
+      FirebaseFirestore.instance.collection('users');
+
+  final fireStoreSnapshot =
+      FirebaseFirestore.instance.collection('users').snapshots();
 
   TextEditingController addcontroller = TextEditingController();
   TextEditingController editcontroller = TextEditingController();
@@ -26,7 +30,7 @@ class _MyToDoListState extends State<MyToDoList> {
     } else {
       try {
         // await databaseRef.child(id).set({'id': id, 'title': title});
-        await fireStore.doc(id).set({'id': id, 'title': title});
+        await fireStoreref.doc(id).set({'id': id, 'title': title});
         addcontroller.clear();
       } catch (error) {
         debugPrint('Error adding item to list: $error');
@@ -98,75 +102,77 @@ class _MyToDoListState extends State<MyToDoList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xfffdf093),
-      appBar: AppBar(
-        backgroundColor: const Color(0xfffce543),
-        title: TextField(
-          controller: addcontroller,
-          decoration: const InputDecoration(hintText: "Type here Text"),
+        backgroundColor: const Color(0xfffdf093),
+        appBar: AppBar(
+          backgroundColor: const Color(0xfffce543),
+          title: TextField(
+            controller: addcontroller,
+            decoration: const InputDecoration(hintText: "Type here Text"),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                add_in_list();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xfff3e78d),
+                foregroundColor: Colors.black,
+              ),
+              child: const Text("ADD"),
+            )
+          ],
         ),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              add_in_list();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xfff3e78d),
-              foregroundColor: Colors.black,
-            ),
-            child: const Text("ADD"),
-          )
-        ],
-      ),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: fireStoreSnapshot,
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return const Text('Some Error');
+            }
 
-      body: ListView.builder(
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return const ListTile(
-              title: Text("hash"),
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (BuildContextcontext, index) {
+                return Container(
+                  margin: const EdgeInsets.only(
+                      left: 18, right: 18, top: 5, bottom: 5),
+                  decoration: BoxDecoration(
+                      color: const Color(0xfffce543),
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: ListTile(
+                    textColor: Colors.black,
+                    title: Text(snapshot.data!.docs[index]['title'].toString()),
+                    // title: Text(snapshot.child('title').value.toString()),
+                    trailing: Wrap(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              // delete_in_list(id);
+                            },
+                            icon: const Icon(Icons.delete_outline_sharp)),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        IconButton(
+                            //Edit icon biutton
+                            onPressed: () {
+                              // edit_in_list(title, id);
+                            },
+                            icon: const Icon(
+                              Icons.edit_outlined,
+                              shadows: [
+                                Shadow(offset: Offset(1, 1), blurRadius: 1)
+                              ],
+                            )),
+                      ],
+                    ),
+                  ),
+                );
+              },
             );
-          }),
-      // body: FirebaseAnimatedList(
-      //   defaultChild: const Text('Loading'),
-      //   //query: databaseRef,
-      //   itemBuilder: (context, snapshot, animantion, index) {
-      //     //final title = snapshot.child('title').value.toString();
-      //     //final id = snapshot.child('id').value.toString();
-      //     return Container(
-      //       margin:
-      //           const EdgeInsets.only(left: 18, right: 18, top: 5, bottom: 5),
-      //       decoration: BoxDecoration(
-      //           color: const Color(0xfffce543),
-      //           border: Border.all(color: Colors.black),
-      //           borderRadius: BorderRadius.circular(10)),
-      //       child: ListTile(
-      //         textColor: Colors.black,
-      //         title: Text(snapshot.child('title').value.toString()),
-      //         trailing: Wrap(
-      //           children: [
-      //             IconButton(
-      //                 onPressed: () {
-      //                  // delete_in_list(id);
-      //                 },
-      //                 icon: const Icon(Icons.delete_outline_sharp)),
-      //             const SizedBox(
-      //               width: 10,
-      //             ),
-      //             IconButton(
-      //                 //Edit icon biutton
-      //                 onPressed: () {
-      //                  // edit_in_list(title, id);
-      //                 },
-      //                 icon: const Icon(
-      //                   Icons.edit_outlined,
-      //                   shadows: [Shadow(offset: Offset(1, 1), blurRadius: 1)],
-      //                 )),
-      //           ],
-      //         ),
-      //       ),
-      //     );
-      //   },
-      // ),
-    );
+          },
+        ));
   }
 }
