@@ -39,7 +39,7 @@ class _MyToDoListState extends State<MyToDoList> {
   }
 
   delete_in_list(String id) async {
-    //databaseRef.child(id).remove();
+    fireStoreref.doc(id).delete();
   }
 
   edit_in_list(String title, String id) async {
@@ -154,7 +154,7 @@ class _MyToDoListState extends State<MyToDoList> {
                       children: [
                         IconButton(
                             onPressed: () {
-                              // delete_in_list(id);
+                              delete_in_list(id);
                             },
                             icon: const Icon(Icons.delete_outline_sharp)),
                         const SizedBox(
